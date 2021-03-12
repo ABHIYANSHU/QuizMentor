@@ -1,28 +1,50 @@
 import './App.css';
-import React, { useState } from 'react';
-import Data from './data.json';
-import Result from './result';
+import React, { useState, useEffect } from 'react';
+import db from './Firebase/firebase';
+import Todo from './Todo/Todo';
 
 function App() {
 
-  const[currentQuestion, setCurrentQuestion] = useState(0);
-  const[score, setScore] = useState(0)
+  const[todos, setTodos] = useState([]);
+  const[input, setInput] = useState('')
+
+  const addTodo = (event) => {
+    event.preventDefault();
+    db.collection('todos').add({
+      timestamp: Date.now(),
+      todo: input
+    })
+    .then((docRef) => {
+      console.log(docRef.id)
+    })
+
+    setInput('');
+  }
+
+  useEffect(() => {
+      db.collection('todos').orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+      setTodos(snapshot.docs.map(doc => { 
+        var val = {
+          id: doc.id,
+          todo: doc.data().todo,
+          timestamp: doc.data().id
+        }
+        return val
+      }))
+    })
+  }, []);
 
   return (
     <div>
-      { currentQuestion === Data.length ? <Result score={score} /> :
-        <div>
-          <h2>{ Data[currentQuestion].question }</h2>
-          {
-            Data[currentQuestion].option.map((opt) => {
-              return <input key={currentQuestion+opt} type="button" value={opt} onClick={(event) => {
-                event.target.value === Data[currentQuestion].answer ? setScore(score+1) : <></>
-                setCurrentQuestion(currentQuestion+1)
-              }} />
-            })
-          }
-        </div>
-      }
+      <form>
+        <input type="text" value={ input } onChange={(event) => { setInput(event.target.value) }} ></input>
+        <input type="submit" value="+" onClick={ addTodo } />
+      </form>
+      {
+        todos.map(todo => {
+          return <Todo key={ todo.id } todo={ todo } />
+        })
+      }   
     </div>
   );
 }
