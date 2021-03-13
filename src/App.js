@@ -12,7 +12,8 @@ function App() {
     event.preventDefault();
     db.collection('todos').add({
       timestamp: Date.now(),
-      todo: input
+      todo: input,
+      priority: 1
     })
     .then((docRef) => {
       console.log(docRef.id)
@@ -22,12 +23,13 @@ function App() {
   }
 
   useEffect(() => {
-      db.collection('todos').orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+      db.collection('todos').orderBy('priority', 'asc').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       setTodos(snapshot.docs.map(doc => { 
         var val = {
           id: doc.id,
           todo: doc.data().todo,
-          timestamp: doc.data().id
+          timestamp: doc.data().timestamp,
+          priority: doc.data().priority
         }
         return val
       }))

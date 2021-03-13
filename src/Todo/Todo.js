@@ -23,6 +23,22 @@ function Todo(props) {
 
         setEditTodo(true)
     }
+
+    const reducePriority = (event) => {
+        db.collection('todos').doc(props.todo.id).set({
+            priority: props.todo.priority + 1,
+            timestamp: props.todo.timestamp,
+            todo: props.todo.todo
+        })
+    }
+
+    const increasePriority = (event) => {
+        db.collection('todos').doc(props.todo.id).set({
+            priority: props.todo.priority - 1,
+            timestamp: props.todo.timestamp,
+            todo: props.todo.todo
+        })
+    }
     
     useEffect(() => {
         setInput(props.todo.todo)
@@ -30,16 +46,18 @@ function Todo(props) {
     }, [message]);
 
     return (
-        <div key={ props.todo.id }>
-            <input key={ props.todo.id+'A' } type="text" value={ input } readOnly={ editTodo } onChange={(event) => { setInput(event.target.value) }} />
-            <input key={ props.todo.id+'B' } type="button" value="X" onClick={ event => db.collection('todos').doc(props.todo.id).delete() } />
-            {
-                editTodo ? <input key={ props.todo.id+'C' } type="button" value="Edit" onClick={() => setEditTodo(false)} /> : <input key={ props.todo.id+'D' } type="button" value="Save" onClick={ updateTodo } />
-            }
-            <div>
-                { message }
+            <div key={ props.todo.id }>
+                <input key={ props.todo.id+'A' } type="text" value={ input } readOnly={ editTodo } onChange={(event) => { setInput(event.target.value) }} />
+                <input key={ props.todo.id+'B' } type="button" value="X" onClick={ event => db.collection('todos').doc(props.todo.id).delete() } />
+                {
+                    editTodo ? <input key={ props.todo.id+'C' } type="button" value="Edit" onClick={() => setEditTodo(false)} /> : <input key={ props.todo.id+'D' } type="button" value="Save" onClick={ updateTodo } />
+                }
+                { props.todo.priority !== 1 ? <input type="button" value="⬆" onClick={ increasePriority } /> : <></> }
+                <input type="button" value="⬇" onClick={ reducePriority } />
+                <div>
+                    { message }
+                </div>
             </div>
-        </div>
       )
 }
 
