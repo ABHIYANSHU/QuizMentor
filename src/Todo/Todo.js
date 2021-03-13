@@ -6,6 +6,7 @@ function Todo(props) {
     const [ editTodo, setEditTodo ] = useState(true)
     const [ input, setInput ] = useState('')
     const [ message, setMessage ] = useState('')
+    const [ date, setDate ] = useState(false)
 
     const updateTodo = (event) => {
         db.collection('todos').doc(props.todo.id).set({
@@ -40,6 +41,10 @@ function Todo(props) {
         })
     }
     
+    const openModal = (event) => {
+        setDate(true)
+    }
+
     useEffect(() => {
         setInput(props.todo.todo)
         // eslint-disable-next-line
@@ -48,12 +53,14 @@ function Todo(props) {
     return (
             <div key={ props.todo.id }>
                 <input key={ props.todo.id+'A' } type="text" value={ input } readOnly={ editTodo } onChange={(event) => { setInput(event.target.value) }} />
+                <input type="button" value=".." onClick={openModal} />
                 <input key={ props.todo.id+'B' } type="button" value="X" onClick={ event => db.collection('todos').doc(props.todo.id).delete() } />
                 {
                     editTodo ? <input key={ props.todo.id+'C' } type="button" value="Edit" onClick={() => setEditTodo(false)} /> : <input key={ props.todo.id+'D' } type="button" value="Save" onClick={ updateTodo } />
                 }
                 { props.todo.priority !== 1 ? <input type="button" value="⬆" onClick={ increasePriority } /> : <></> }
                 <input type="button" value="⬇" onClick={ reducePriority } />
+                { date ? <><input type="time" /><input type="date" /></> : <></> }
                 <div>
                     { message }
                 </div>

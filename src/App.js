@@ -39,8 +39,8 @@ function App() {
   return (
     <div>
       <form>
-        <input type="text" value={ input } onChange={(event) => { setInput(event.target.value) }} ></input>
-        <input type="submit" value="+" onClick={ addTodo } />
+        <input type="text" placeholder="Add a task" value={ input } onChange={(event) => { setInput(event.target.value) }} ></input>
+        <input type="submit" value="Add" onClick={ addTodo } />
       </form>
       {
         todos.map(todo => {
