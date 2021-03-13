@@ -5,7 +5,7 @@
 3. Delete tasks ✔
 4. Update Tasks ✔
 5. Sort Tasks by Priority ✔
-6. Redesign
+6. Complete Task Functionality
 7. Add Subtext for the Task
 8. Schedule the Task
 9. User based Tasks
